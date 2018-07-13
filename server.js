@@ -78,5 +78,6 @@ function startTimer() {
 
 app.use('/api', stockRoutes);
 
-server.listen(8080);
+const PORT = 8080 || process.env.PORT
+server.listen(PORT);
 console.log('Visit http://localhost:8080 in your browser');
