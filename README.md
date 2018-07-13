@@ -1,8 +1,4 @@
-# Angular WebSockets
-
-This project shows how Angular services and RxJS Observables can
-be used with a WebSockets server to stream data from the server to the
-client.
+# Foresight
 
 ## Running the Application
 
