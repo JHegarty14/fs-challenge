@@ -17,6 +17,10 @@ let timerId = null,
 
 app.use(express.static(__dirname + '/dist')); 
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
+
 mongoose
   .connect(
     'mongodb://sa:test123@ds015942.mlab.com:15942/foresight_challenge',
@@ -95,5 +99,5 @@ app.use('*', (req, res, next) => {
 app.use('/api/user', userRoutes);
 
 const PORT = process.env.PORT || 8080
+console.log(PORT);
 server.listen(PORT);
-console.log('Visit http://localhost:8080 in your browser');

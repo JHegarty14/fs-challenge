@@ -11,7 +11,7 @@ import { Socket } from '../shared/interfaces';
 import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs/Subject';
 
-const ENV_URL = environment.apiUrl + '/api'
+const ENV_URL = environment.envUrl
 
 declare var io : {
   connect(url: string): Socket;
@@ -31,7 +31,7 @@ export class DataService {
   constructor(private http: HttpClient, private router: Router) {}
 
   startTimer() : Observable<object> {
-    this.socket = socketIo('http://localhost:8080');
+    this.socket = socketIo(ENV_URL);
 
     this.socket.on('data', (res) => {
       this.observer.next(res.data);

@@ -72,11 +72,6 @@ export class AuthService {
           console.log(expirationDate);
           this.saveAuthData(token, expirationDate);
           this.router.navigate(['/']);
-          if (this.isAuthenticated === true) {
-            console.log('logged in!');
-          } else {
-            console.log('eyyy hwat da fuck???');
-          }
         }
       });
   }
