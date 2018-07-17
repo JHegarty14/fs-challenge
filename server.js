@@ -55,13 +55,6 @@ mongoose
   });
   
   function startTimer() {
-    alphaVantageAPI.getIntradayData('TWTR', '1min')
-       .then(intradayData => {
-        let strData = JSON.stringify(intradayData);
-        for (const s of sockets) {
-          s.emit('data', { data: intradayData[0] });
-        }
-      })
     timerId = setInterval(() => {
       if (!sockets.size) {
         clearInterval(timerId);
