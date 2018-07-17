@@ -13,7 +13,7 @@ body {
   align-Items: center
 }
 
-.counters {
+.centerChildren {
   display: flex;
   flex-Direction: column;
   justify-Content: center;

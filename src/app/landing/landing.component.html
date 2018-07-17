@@ -2,7 +2,7 @@
   <div class='container hero' color='background'>
   <h1 class='txt'>Twitter Stock Tracker</h1>
 </div>
-<div *ngIf='!userIsAuthenticated'>
+<div class='centerChildren' *ngIf='!userIsAuthenticated'>
   <h1 class='text'>Hi David,</h1>
   <p class='text'>Please sign in to view the data.</p>
 </div>
@@ -19,7 +19,7 @@
       </mat-form-field>
     </form> -->
   </div>
-  <div class='counters'>
+  <div class='centerChildren'>
     <p class='txt'>Open: {{ stocks[1] }}</p>
     <p class='txt'>High: {{ stocks[2] }}</p>
     <p class='txt'>Low: {{ stocks[3] }}</p>
