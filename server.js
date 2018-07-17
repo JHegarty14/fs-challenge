@@ -76,7 +76,7 @@ mongoose
           s.emit('data', { data: intradayData[0] });
         }
       })
-    }, 60000);
+    }, 10000);
   }
 
 app.use(bodyParser.json());
