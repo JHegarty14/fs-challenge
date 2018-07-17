@@ -39,13 +39,6 @@ mongoose
     console.log(`Socket ${socket.id} added`);
   
     if (!timerId) {
-      alphaVantageAPI.getIntradayData('TWTR', '1min')
-       .then(intradayData => {
-        let strData = JSON.stringify(intradayData);
-        for (const s of sockets) {
-          s.emit('data', { data: intradayData[0] });
-        }
-      })
       startTimer();
     }
   
@@ -62,6 +55,13 @@ mongoose
   });
   
   function startTimer() {
+    alphaVantageAPI.getIntradayData('TWTR', '1min')
+       .then(intradayData => {
+        let strData = JSON.stringify(intradayData);
+        for (const s of sockets) {
+          s.emit('data', { data: intradayData[0] });
+        }
+      })
     timerId = setInterval(() => {
       if (!sockets.size) {
         clearInterval(timerId);
@@ -76,7 +76,7 @@ mongoose
           s.emit('data', { data: intradayData[0] });
         }
       })
-    }, 1000);
+    }, 60000);
   }
 
 app.use(bodyParser.json());
