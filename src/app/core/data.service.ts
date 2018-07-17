@@ -17,7 +17,9 @@ declare var io : {
   connect(url: string): Socket;
 };
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DataService {
 
   private stocks: Stock[] = [];
@@ -38,34 +40,8 @@ export class DataService {
     return this.createObservable();
   }
 
-  getStocks(selectedValue: string) : Observable<object> {
-    const queryParams = `?pageOptions=${selectedValue}`;
-    if (selectedValue !== 'live') {
-      this.http.get<{stocks: any}>(
-        ENV_URL + queryParams
-      ).pipe(
-        map(stockData => {
-          return {
-            stocks: stockData.stocks.map(stock => {
-              return {
-                open: stock.open,
-                high: stock.high,
-                low: stock.low,
-                close: stock.close,
-                volume: stock.volume
-              }
-            })
-          }
-        })
-      ).subscribe(transformedData => {
-        this.stocks = transformedData.stocks;
-        this.stocksUpdated.next({
-          stocks: [...this.stocks]
-        });
-        console.log(this.stocks)
-      });
-    } else {
-      this.startTimer().pipe(
+  getStocks() : Observable<object> {
+    this.startTimer().pipe(
         map(stockData => {
           return {
             stocks: stockData[0]
@@ -78,8 +54,6 @@ export class DataService {
           stocks: [...this.stocks]
         });
       });
-    }
-
     return this.createObservable();
   }
 

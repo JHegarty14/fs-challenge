@@ -1,0 +1,44 @@
+<div>
+  <div class='container hero' color='background'>
+  <h1 class='txt'>Twitter Stock Tracker</h1>
+</div>
+<div *ngIf='!userIsAuthenticated'>
+  <h1 class='text'>Hi David,</h1>
+  <p class='text'>Please sign in to view the data.</p>
+</div>
+<div *ngIf='userIsAuthenticated'>
+  <div class='container'>
+    <h3>Live data from AlphaVantage</h3>
+<!--    <form>
+      <mat-form-field>
+        <mat-select placeholder='Select Timeframe' [(ngModel)]="selectedValue" name="pageOptions">
+          <mat-option *ngFor="let option of pageOptions" [value]="option.value">
+            {{option.viewValue}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form> -->
+  </div>
+  <div class='counters'>
+    <p class='txt'>Open: {{ stocks[1] }}</p>
+    <p class='txt'>High: {{ stocks[2] }}</p>
+    <p class='txt'>Low: {{ stocks[3] }}</p>
+    <p class='txt'>Close: {{ stocks[4] }}</p>
+    <p class='txt'>Volume: {{ stocks[5] }}</p>
+  </div>
+</div>
+<!--  <div class='counters' *ngIf="selectedValue === 'one'">
+    <p class='txt'>Open: {{ oneWeek[1] }}</p>
+    <p class='txt'>High: {{ oneWeek[2] }}</p>
+    <p class='txt'>Low: {{ oneWeek[3] }}</p>
+    <p class='txt'>Close: {{ oneWeek[4] }}</p>
+    <p class='txt'>Volume: {{ oneWeek[5] }}</p>
+  </div>
+  <div class='counters' *ngIf="selectedValue === 'two'">
+    <p class='txt'>Open: {{ twoWeeks[1] }}</p>
+    <p class='txt'>High: {{ twoWeeks[2] }}</p>
+    <p class='txt'>Low: {{ twoWeeks[3] }}</p>
+    <p class='txt'>Close: {{ twoWeeks[4] }}</p>
+    <p class='txt'>Volume: {{ twoWeeks[5] }}</p>
+  </div>
+</div>-->

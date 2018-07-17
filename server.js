@@ -1,19 +1,21 @@
-const express = require('express'),
-      app = express(),
+const path = require('path'),
+      express = require('express'),
+      bodyParser = require('body-parser'),
       mongoose = require('mongoose'),
-      server = require('http').createServer(app);
-      io = require('socket.io')(server);
-      bodyParser = require('body-parser')
-      Stock = require('./models/stock');
-      apiKey = 'ZPEOYN5BB44OLCAK';
-      AlphaVantageAPI = require('alpha-vantage-cli').AlphaVantageAPI;
-      alphaVantageAPI = new AlphaVantageAPI(apiKey, 'compact', true);
-      stockRoutes = require('./routes/stocks');
+      app = express(),
+      server = require('http').createServer(app),
+      io = require('socket.io')(server),
+      apiKey = 'ZPEOYN5BB44OLCAK',
+      AlphaVantageAPI = require('alpha-vantage-cli').AlphaVantageAPI,
+      alphaVantageAPI = new AlphaVantageAPI(apiKey, 'compact', true),
+      userRoutes = require('./backend/routes/user');
 
-const router = express.Router();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 let timerId = null,
     sockets = new Set();
+
+app.use(express.static(__dirname + '/dist')); 
 
 mongoose
   .connect(
@@ -25,59 +27,73 @@ mongoose
   })
   .catch(() => {
     console.log('Connection failed!');
-});
+  });
 
-const db = mongoose.connection;
+  io.on('connection', socket => {
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+    sockets.add(socket);
+    console.log(`Socket ${socket.id} added`);
   
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(express.static(__dirname + '/dist')); 
-
-io.on('connection', socket => {
-
-  sockets.add(socket);
-  console.log(`Socket ${socket.id} added`);
-
-  if (!timerId) {
-    startTimer();
+    if (!timerId) {
+      alphaVantageAPI.getIntradayData('TWTR', '1min')
+       .then(intradayData => {
+        let strData = JSON.stringify(intradayData);
+        for (const s of sockets) {
+          s.emit('data', { data: intradayData[0] });
+        }
+      })
+      startTimer();
+    }
+  
+    socket.on('clientdata', data => {
+      console.log(data);
+    });
+  
+    socket.on('disconnect', () => {
+      console.log(`Deleting socket: ${socket.id}`);
+      sockets.delete(socket);
+      console.log(`Remaining sockets: ${sockets.size}`);
+    });
+  
+  });
+  
+  function startTimer() {
+    timerId = setInterval(() => {
+      if (!sockets.size) {
+        clearInterval(timerId);
+        timerId = null;
+        console.log(`Timer stopped`);
+      }
+  
+      alphaVantageAPI.getIntradayData('TWTR', '1min')
+       .then(intradayData => {
+        let strData = JSON.stringify(intradayData);
+        for (const s of sockets) {
+          s.emit('data', { data: intradayData[0] });
+        }
+      })
+    //return new data every minute
+    }, 60000);
   }
 
-  socket.on('clientdata', data => {
-    console.log(data);
-  });
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-  socket.on('disconnect', () => {
-    console.log(`Deleting socket: ${socket.id}`);
-    sockets.delete(socket);
-    console.log(`Remaining sockets: ${sockets.size}`);
-  });
-
+app.use('*', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization, cache-control, pragma'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PATCH, PUT, DELETE, OPTIONS'
+  );
+  next();
 });
 
-function startTimer() {
-  timerId = setInterval(() => {
-    if (!sockets.size) {
-      clearInterval(timerId);
-      timerId = null;
-      console.log(`Timer stopped`);
-    }
+app.use('/api/user', userRoutes);
 
-    alphaVantageAPI.getIntradayData('TWTR', '1min')
-     .then(intradayData => {
-      let strData = JSON.stringify(intradayData);
-      for (const s of sockets) {
-        s.emit('data', { data: intradayData[0] });
-      }
-    })
-  //return new data every minute
-  }, 60000);
-}
-
-app.use('/api', stockRoutes);
-
-const PORT = 8080 || process.env.PORT
+const PORT = process.env.PORT || 8080
 server.listen(PORT);
 console.log('Visit http://localhost:8080 in your browser');
