@@ -66,7 +66,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 }
 
 private subscribeToData(): void {
-    this.timerSubscription = Observable.timer(60000).first()
+    this.timerSubscription = Observable.timer(1000).first()
       .subscribe(() => this.refreshData());
 }
 
