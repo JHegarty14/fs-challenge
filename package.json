@@ -5,13 +5,13 @@
   "main": "server.js",
   "scripts": {
     "ng": "ng",
-    "postinstall": "ng build --aot -prod",
     "serve": "ng serve",
     "start": "node server.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "ng build --aot -prod"
   },
   "engines": {
     "node": "~9.0.0",
