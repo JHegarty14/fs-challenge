@@ -5,8 +5,6 @@
 
 export const environment = {
   production: false,
-  envUrl: 'http://localhost:8080',
-  apiUrl: 'http://localhost:8080/api'
-  //envUrl: 'https://foresight-challenge.herokuapp.com',
-  //apiUrl: 'https://foresight-challenge.herokuapp.com/api'
+  envUrl: 'https://foresight-challenge.herokuapp.com',
+  apiUrl: 'https://foresight-challenge.herokuapp.com/api'
 };
